@@ -1,0 +1,40 @@
+.form{
+  border: solid black 2px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  max-width: 600px;
+  margin: auto;
+  gap: 5px;
+}
+#formButton{
+  margin-top: 20px;
+  cursor: pointer;
+}
+h1{
+  border: solid black 1px;
+  padding: 20px 5px 20px 5px;
+}
+
+.table{
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  min-height: 300px;
+  width: 500px;
+  border: solid black 2px;
+  margin-top: 20px;
+
+}
+#Asc_icon{
+  width: 20px;
+  vertical-align: middle;
+}
+#delete:hover{
+  cursor: pointer;
+}
+#tableCategory{
+  border: none;
+  font-size: 14.7px;
+  font-weight: bold;
+}
