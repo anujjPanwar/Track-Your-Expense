@@ -1,5 +1,5 @@
 .form{
-  border: solid black 2px;
+  border: solid rgb(175, 145, 145) 5px;
   padding: 10px;
   display: flex;
   flex-direction: column;
@@ -12,8 +12,12 @@
   cursor: pointer;
 }
 h1{
-  border: solid black 1px;
+  border: solid black 0px;
   padding: 20px 5px 20px 5px;
+  background-color: gray;
+  color: white;
+ text-shadow: 0 2px 8px rgba(255, 255, 255, 0.6);
+
 }
 
 .table{
@@ -22,7 +26,7 @@ h1{
   margin: auto;
   min-height: 300px;
   width: 500px;
-  border: solid black 2px;
+  border: solid rgb(189, 156, 156) 5px;
   margin-top: 20px;
 
 }
@@ -30,8 +34,14 @@ h1{
   width: 20px;
   vertical-align: middle;
 }
+#delete{
+  background-color: rgb(235, 108, 94);
+  color: white;
+}
 #delete:hover{
   cursor: pointer;
+  background-color: rgb(236, 156, 143);
+  
 }
 #tableCategory{
   border: none;
