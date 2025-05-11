@@ -62,7 +62,7 @@ h1{
   color: red;
   position: absolute;
   top: 180px;
-  left: 545px;
+  right: 16px;
   visibility: hidden;
 }
 .ReqCategory{
@@ -70,7 +70,7 @@ h1{
   color: red;
   position: absolute;
   top: 231px;
-  left: 545px;
+  right: 16px;
   visibility: hidden;
 }
 .ReqAmount{
@@ -78,7 +78,7 @@ h1{
   color: red;
   position: absolute;
   top: 285px;
-  left: 545px;
+  right: 16px;
   visibility: hidden;
 }
 .visible {
