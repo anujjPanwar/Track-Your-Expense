@@ -48,3 +48,31 @@ h1{
   font-size: 14.7px;
   font-weight: bold;
 }
+
+.ReqTitle{
+  font-size: 15px;
+  color: red;
+  position: absolute;
+  top: 190px;
+  left: 309px;
+  visibility: hidden;
+}
+.ReqCategory{
+  font-size: 15px;
+  color: red;
+  position: absolute;
+  top: 243px;
+  left: 309px;
+  visibility: hidden;
+}
+.ReqAmount{
+  font-size: 15px;
+  color: red;
+  position: absolute;
+  top: 300px;
+  left: 309px;
+  visibility: hidden;
+}
+.visible {
+  visibility: visible;
+}

@@ -37,18 +37,15 @@ function App() {
   const ChangeOrder = () => {
     localStorage.setItem("Asc", JSON.stringify({ value: !AscDsc }));
     // localStorage.setItem("formEntries", JSON.stringify(SortedData));
-    
+
     setAscDsc(!AscDsc);
     setGetData(SortedData);
   };
-  console.log("ascdsc//////",AscDsc);
   const SortedData = [...expence].sort((a, b) => {
     return AscDsc
       ? Number(a.Amount) - Number(b.Amount)
       : Number(b.Amount) - Number(a.Amount);
   });
-  
-
 
   useEffect(() => {
     let expenc = JSON.parse(localStorage.getItem("formEntries"));
@@ -65,8 +62,29 @@ function App() {
       [name]: value,
     }));
   };
+  const [checkfield, setfield] = useState({});
+  // Validate field
+  const Validate = (data) => {
+    const fild = {};
+    if (!data.Title) {
+      fild["Title"] = "Tittle is Required";
+    }
+    if (!data.Category) {
+      fild["Category"] = "Tittle is Category";
+    }
+    if (!data.Amount) {
+      fild["Amount"] = "Amount is Required";
+    }
+    setfield(fild);
+    return Object.keys(fild);
+  };
+
   const Submit = (e) => {
     e.preventDefault();
+    const required = Validate(formData);
+    console.log("formdata", formData);
+    if (required.length) return;
+
     const existingData = JSON.parse(localStorage.getItem("formEntries")) || [];
     const updatedData = [
       ...existingData,
@@ -74,10 +92,14 @@ function App() {
     ];
     setGetData(updatedData);
     localStorage.setItem("formEntries", JSON.stringify(updatedData));
-    // const jsonData = JSON.stringify(formData)
-    // localStorage.setItem("expence",jsonData)
-  };
+    setFormData({
+      Title: "",
+      Category: "",
+      Amount: "",
+    });
 
+    console.log("formdata", formData);
+  };
 
   // Handle Delete Category
 
@@ -96,15 +118,16 @@ function App() {
     setGetData(data);
   };
 
-  // Filter All Category 
+  // Filter All Category
   const existingData = JSON.parse(localStorage.getItem("formEntries")) || [];
-  const filterCategory = ([...(new Set(existingData.map((val) => (val.Category))))]).map((val_2)=>{
+  const filterCategory = [
+    ...new Set(existingData.map((val) => val.Category)),
+  ].map((val_2) => {
     return <option value={val_2}>{val_2}</option>;
-  })
-  
-  // Handle Filterd Category to print in the table 
+  });
+
+  // Handle Filterd Category to print in the table
   const handelOnChangeCategory = (val) => {
-    console.log("handelOnChangeCategory", val.target.value);
     const existingData = JSON.parse(localStorage.getItem("formEntries")) || [];
     if (val.target.value == "All Category") {
       setGetData(existingData);
@@ -122,9 +145,25 @@ function App() {
       <form className="form" onSubmit={Submit}>
         <h1>Track Your Expense</h1>
         <label htmlFor="Title">Title</label>
-        <input type="text" name="Title" id="Title" onChange={handleChange} />
+        <input
+          type="text"
+          name="Title"
+          value={formData.Title}
+          id="Title"
+          onChange={handleChange}
+          className="Required"
+        />
+        <p className={`ReqTitle ${"Title" in checkfield ? "visible" : ""}`}>
+          Required
+        </p>
         <label htmlFor="Category">Category</label>
-        <select name="Category" onChange={handleChange} id="Category">
+        <select
+          name="Category"
+          onChange={handleChange}
+          value={formData.Category}
+          id="Category"
+          className="Required"
+        >
           <option value="">Select Category</option>
           <option value="Grocery">Grocery</option>
           <option value="Clothing">Clothing</option>
@@ -142,14 +181,24 @@ function App() {
           <option value="Fuel">Fuel</option>
           <option value="Misc">Miscellaneous</option>
         </select>
+        <p
+          className={`ReqCategory ${"Category" in checkfield ? "visible" : ""}`}
+        >
+          Required
+        </p>
 
         <label htmlFor="Amount">Amount</label>
         <input
           type="number"
           name="Amount"
+          value={formData.Amount}
           id="Amount"
           onChange={handleChange}
+          className="Required"
         />
+        <p className={`ReqAmount ${"Amount" in checkfield ? "visible" : ""}`}>
+          Required
+        </p>
         <button id="formButton" type="submit">
           Add
         </button>
@@ -161,7 +210,11 @@ function App() {
             <tr>
               <th>Title</th>
               <th>
-                <select name="filterCategory" onChange={handelOnChangeCategory} id="tableCategory">
+                <select
+                  name="filterCategory"
+                  onChange={handelOnChangeCategory}
+                  id="tableCategory"
+                >
                   <option value="All Category">All Category</option>
                   {filterCategory}
                 </select>
