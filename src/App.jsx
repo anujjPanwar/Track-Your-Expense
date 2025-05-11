@@ -3,6 +3,8 @@ import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 import Asc_icon from "./assets/Asc_Dsc_images.png";
+import Input from "./Input";
+import Select from "./Select";
 
 const categoryOptions = [
   "Grocery",
@@ -30,6 +32,7 @@ function App() {
   });
   // const [storedData, setStoredData] = useState()
   const [expence, setGetData] = useState([]);
+  const [checkfield, setfield] = useState({});
   const [AscDsc, setAscDsc] = useState(() => {
     const stored = localStorage.getItem("Asc");
     return stored ? JSON.parse(stored).value : true; // default to true if not found
@@ -61,20 +64,44 @@ function App() {
       ...prevData,
       [name]: value,
     }));
+    setfield({});
   };
-  const [checkfield, setfield] = useState({});
+
+  const ValidateError = {
+    "Title":[{Required:"true",message:"Title is Required"},
+      {minlength:"5",message:"Title length should be at least 5"}
+    ],
+    "Category":[{Required:"true",message:"Category is Required"}],
+    "Amount":[{Required:"true",message:"Amount is Required"}]
+  }
+
+
   // Validate field
   const Validate = (data) => {
     const fild = {};
-    if (!data.Title) {
-      fild["Title"] = "Tittle is Required";
-    }
-    if (!data.Category) {
-      fild["Category"] = "Tittle is Category";
-    }
-    if (!data.Amount) {
-      fild["Amount"] = "Amount is Required";
-    }
+    // if (!data.Title) {
+    //   fild["Title"] = "Tittle is Required";
+    // }
+    // if (!data.Category) {
+    //   fild["Category"] = "Tittle is Category";
+    // }
+    // if (!data.Amount) {
+    //   fild["Amount"] = "Amount is Required";
+    // }
+    Object.entries(formData).forEach(([key,value])=>{
+      ValidateError[key].some((rule)=>{
+        console.log(rule);
+        if(rule.Required && !value){
+          fild[key] = rule.message
+          return true
+        }
+        if(rule.minlength && value.length<5){
+          fild[key] = rule.message
+        }
+        
+      })
+      
+    })
     setfield(fild);
     return Object.keys(fild);
   };
@@ -144,61 +171,34 @@ function App() {
     <>
       <form className="form" onSubmit={Submit}>
         <h1>Track Your Expense</h1>
-        <label htmlFor="Title">Title</label>
-        <input
-          type="text"
-          name="Title"
-          value={formData.Title}
+        <Input
           id="Title"
-          onChange={handleChange}
-          className="Required"
+          val={formData.Title}
+          handleChange={handleChange}
+          checkfield={checkfield}
+          name="Title"
+          typee="text"
+          Class="Req"
+          reqVal = {checkfield.Title}
         />
-        <p className={`ReqTitle ${"Title" in checkfield ? "visible" : ""}`}>
-          Required
-        </p>
-        <label htmlFor="Category">Category</label>
-        <select
+        <Select
           name="Category"
-          onChange={handleChange}
           value={formData.Category}
-          id="Category"
-          className="Required"
-        >
-          <option value="">Select Category</option>
-          <option value="Grocery">Grocery</option>
-          <option value="Clothing">Clothing</option>
-          <option value="Medicines">Medicines</option>
-          <option value="Utilities">Utilities</option>
-          <option value="Transportation">Transportation</option>
-          <option value="Rent">Rent</option>
-          <option value="Internet">Internet & Mobile</option>
-          <option value="Household">Household Items</option>
-          <option value="PersonalCare">Personal Care</option>
-          <option value="Entertainment">Entertainment</option>
-          <option value="Subscriptions">Subscriptions</option>
-          <option value="Education">Education</option>
-          <option value="DiningOut">Dining Out</option>
-          <option value="Fuel">Fuel</option>
-          <option value="Misc">Miscellaneous</option>
-        </select>
-        <p
-          className={`ReqCategory ${"Category" in checkfield ? "visible" : ""}`}
-        >
-          Required
-        </p>
-
-        <label htmlFor="Amount">Amount</label>
-        <input
-          type="number"
-          name="Amount"
-          value={formData.Amount}
-          id="Amount"
-          onChange={handleChange}
-          className="Required"
+          handleChange={handleChange}
+          checkfield={checkfield}
+          Class="Req"
+          reqVal = {checkfield.Category}
         />
-        <p className={`ReqAmount ${"Amount" in checkfield ? "visible" : ""}`}>
-          Required
-        </p>
+        <Input
+          id="Amount"
+          val={formData.Amount}
+          handleChange={handleChange}
+          checkfield={checkfield}
+          name="Amount"
+          typee="number"
+          Class="Req"
+          reqVal = {checkfield.Amount}
+        />
         <button id="formButton" type="submit">
           Add
         </button>
