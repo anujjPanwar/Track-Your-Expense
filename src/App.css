@@ -67,3 +67,34 @@ h1{
 .visible {
   visibility: visible;
 }
+
+.contextMenue{
+  /* display: flex;
+  flex-direction:column;
+  height: 150px;
+  width: 100px; */
+  /* border: solid black 5px; */
+  position: absolute;
+
+  padding: 10px 0px 10px 0px;
+  width: 150px;
+  color: white;
+  border-radius: 5px;
+  background-color: rgb(163, 170, 170);
+}
+#C1{
+  background-color: rgb(140, 143, 146);
+  cursor: pointer;
+  padding: 5px;
+}
+#C2{
+  background-color: rgb(157, 160, 162);
+  cursor: pointer;
+   padding: 5px;
+}
+#C2:hover{
+  background-color: rgb(191, 196, 200);
+}
+#C1:hover{
+  background-color: rgb(191, 196, 200);
+}

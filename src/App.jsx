@@ -5,6 +5,8 @@ import "./App.css";
 import Asc_icon from "./assets/Asc_Dsc_images.png";
 import Input from "./Input";
 import Select from "./Select";
+import { FilterHook } from "./Hooks/FilterHook";
+import ContextMenue from "./ContextMenue";
 
 const categoryOptions = [
   "Grocery",
@@ -25,6 +27,10 @@ const categoryOptions = [
 ];
 
 function App() {
+  const [ContextMenuePosition, setCtxtMenuePosition] = useState({});
+  const [rowId, setRowId] = useState("");
+  const [Save, setSave] = useState("");
+
   const [formData, setFormData] = useState({
     Title: "",
     Category: "",
@@ -68,13 +74,13 @@ function App() {
   };
 
   const ValidateError = {
-    "Title":[{Required:"true",message:"Title is Required"},
-      {minlength:"5",message:"Title length should be at least 5"}
+    Title: [
+      { Required: "true", message: "Title is Required" },
+      { minlength: "5", message: "Title length should be at least 5" },
     ],
-    "Category":[{Required:"true",message:"Category is Required"}],
-    "Amount":[{Required:"true",message:"Amount is Required"}]
-  }
-
+    Category: [{ Required: "true", message: "Category is Required" }],
+    Amount: [{ Required: "true", message: "Amount is Required" }],
+  };
 
   // Validate field
   const Validate = (data) => {
@@ -88,20 +94,18 @@ function App() {
     // if (!data.Amount) {
     //   fild["Amount"] = "Amount is Required";
     // }
-    Object.entries(formData).forEach(([key,value])=>{
-      ValidateError[key].some((rule)=>{
+    Object.entries(formData).forEach(([key, value]) => {
+      ValidateError[key].some((rule) => {
         console.log(rule);
-        if(rule.Required && !value){
-          fild[key] = rule.message
-          return true
+        if (rule.Required && !value) {
+          fild[key] = rule.message;
+          return true;
         }
-        if(rule.minlength && value.length<5){
-          fild[key] = rule.message
+        if (rule.minlength && value.length < 3) {
+          fild[key] = rule.message;
         }
-        
-      })
-      
-    })
+      });
+    });
     setfield(fild);
     return Object.keys(fild);
   };
@@ -132,7 +136,7 @@ function App() {
 
   let HandleDelete = (e) => {
     let row = e.target.closest("tr");
-    const id = row.getAttribute("id");
+    const id = row?.getAttribute("id") || rowId;
     localStorage.setItem(
       "formEntries",
       JSON.stringify(
@@ -143,6 +147,7 @@ function App() {
     );
     const data = JSON.parse(localStorage.getItem("formEntries"));
     setGetData(data);
+    setCtxtMenuePosition({});
   };
 
   // Filter All Category
@@ -156,19 +161,29 @@ function App() {
   // Handle Filterd Category to print in the table
   const handelOnChangeCategory = (val) => {
     const existingData = JSON.parse(localStorage.getItem("formEntries")) || [];
-    if (val.target.value == "All Category") {
-      setGetData(existingData);
-      return;
-    } else {
-      let filterCategoryData = existingData.filter((item) => {
-        return item.Category == val.target.value;
-      });
-      setGetData(filterCategoryData);
-    }
+    FilterHook(val, existingData, setGetData);
+    // if (val.target.value == "All Category") {
+    //   setGetData(existingData);
+    //   return;
+    // } else {
+    //   let filterCategoryData = existingData.filter((item) => {
+    //     return item.Category == val.target.value;
+    //   });
+    //   setGetData(filterCategoryData);
+    // }
   };
 
   return (
     <>
+      <ContextMenue
+        ContextMenuePosition={ContextMenuePosition}
+        setCtxtMenuePosition={setCtxtMenuePosition}
+        onclickDelete={HandleDelete}
+        rowId={rowId}
+        formData={formData}
+        setFormData={setFormData}
+        setSave={setSave}
+      />
       <form className="form" onSubmit={Submit}>
         <h1>Track Your Expense</h1>
         <Input
@@ -179,7 +194,7 @@ function App() {
           name="Title"
           typee="text"
           Class="Req"
-          reqVal = {checkfield.Title}
+          reqVal={checkfield.Title}
         />
         <Select
           name="Category"
@@ -187,7 +202,7 @@ function App() {
           handleChange={handleChange}
           checkfield={checkfield}
           Class="Req"
-          reqVal = {checkfield.Category}
+          reqVal={checkfield.Category}
         />
         <Input
           id="Amount"
@@ -197,15 +212,20 @@ function App() {
           name="Amount"
           typee="number"
           Class="Req"
-          reqVal = {checkfield.Amount}
+          reqVal={checkfield.Amount}
         />
         <button id="formButton" type="submit">
-          Add
+          {Save == "" ? "Add" : "Save"}
         </button>
       </form>
 
       <div className="table">
-        <table border="1">
+        <table
+          border="1"
+          onClick={() => {
+            setCtxtMenuePosition({});
+          }}
+        >
           <thead>
             <tr>
               <th>Title</th>
@@ -233,7 +253,18 @@ function App() {
           <tbody>
             {expence.map((val, index, arr) => {
               return (
-                <tr key={val.id} id={val.id}>
+                <tr
+                  key={val.id}
+                  id={val.id}
+                  onContextMenu={(e) => {
+                    e.preventDefault();
+                    setCtxtMenuePosition({
+                      left: `${e.clientX + 20}px`,
+                      top: `${e.clientY}px`,
+                    });
+                    setRowId(val.id);
+                  }}
+                >
                   <td>{val.Title}</td>
                   <td>{val.Category}</td>
                   <td>{val.Amount}</td>
