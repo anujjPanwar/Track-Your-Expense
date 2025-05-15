@@ -96,7 +96,6 @@ function App() {
     // }
     Object.entries(formData).forEach(([key, value]) => {
       ValidateError[key].some((rule) => {
-        console.log(rule);
         if (rule.Required && !value) {
           fild[key] = rule.message;
           return true;
@@ -113,10 +112,30 @@ function App() {
   const Submit = (e) => {
     e.preventDefault();
     const required = Validate(formData);
-    console.log("formdata", formData);
     if (required.length) return;
 
     const existingData = JSON.parse(localStorage.getItem("formEntries")) || [];
+    // update the edited item  
+    if (Save != "") {
+      const updatedExpenses = existingData.map((item) => {
+        if (item.id === rowId) {
+          return { ...item, ...formData }; // merge updated fields
+        }
+        return item;
+      });
+
+      localStorage.setItem("formEntries", JSON.stringify(updatedExpenses));
+      setGetData(updatedExpenses);
+      setSave("");
+      setFormData({
+        Title: "",
+        Category: "",
+        Amount: "",
+      });
+
+      return;
+    }
+
     const updatedData = [
       ...existingData,
       { ...formData, id: crypto.randomUUID() },
@@ -128,8 +147,6 @@ function App() {
       Category: "",
       Amount: "",
     });
-
-    console.log("formdata", formData);
   };
 
   // Handle Delete Category
